@@ -12,26 +12,30 @@
         <div class="game-container">
             <!-- 游戏开始界面 -->
             <div v-if="gameState === 'start'" class="start-screen">
-                <h1>往楼下扔垃圾</h1>
-                <p class="instructions">游戏规则：</p>
-                <ul class="rules">
-                    <li>点击鼠标左键扔垃圾</li>
-                    <li>楼下有人会随机往上看</li>
-                    <li>有人往上看时不能扔，否则被发现</li>
-                    <li>成功扔出5个垃圾即可胜利</li>
-                </ul>
-                <button @click="startGame" class="start-btn">开始游戏</button>
+                <h1>🗑️ 往楼下扔垃圾</h1>
+                <div class="rules-box">
+                    <p class="instructions">📜 游戏规则：</p>
+                    <ul class="rules">
+                        <li>👆 点击鼠标左键扔垃圾</li>
+                        <li>👀 楼下有人会随机往上看</li>
+                        <li>⚠️ 有人往上看时不能扔，否则被发现</li>
+                        <li>🏆 成功扔出5个垃圾即可胜利</li>
+                    </ul>
+                </div>
+                <button @click="startGame" class="start-btn">🎮 开始游戏</button>
             </div>
 
             <!-- 游戏主界面 -->
             <div v-else-if="gameState === 'playing'" class="game-screen">
                 <!-- 游戏信息 -->
                 <div class="game-info">
-                    <div class="score">成功: {{ successCount }} / 5</div>
+                    <div class="score">✅ 成功: {{ successCount }} / 5</div>
+                    <div v-if="isPersonLookingUp" class="warning">⚠️ 危险！有人往上看！</div>
+                    <div v-else class="safe">✅ 安全，可以扔垃圾</div>
                 </div>
 
                 <!-- 楼上窗口（玩家视角） -->
-                <div class="window">
+                <div class="window" @click="handleWindowClick">
                     <div class="window-frame">
                         <div class="window-inner">
                             <div class="hand" :class="{ 'throwing': isThrowing }">
@@ -39,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="hint">点击窗口扔垃圾</p>
+                    <p class="hint">👆 点击此处扔垃圾</p>
                 </div>
 
                 <!-- 楼下行人区域 -->
@@ -66,16 +70,20 @@
 
             <!-- 游戏结束界面 -->
             <div v-else-if="gameState === 'gameover'" class="end-screen">
+                <div class="lose-icon">😱</div>
                 <h1 class="lose">被发现了！游戏结束</h1>
                 <p class="result">你扔垃圾时被楼下的人发现了！</p>
-                <button @click="startGame" class="restart-btn">再试一次</button>
+                <p class="tip">下次要等行人不往上看的时候再扔哦~</p>
+                <button @click="startGame" class="restart-btn">🔄 再试一次</button>
             </div>
 
             <!-- 胜利界面 -->
             <div v-else-if="gameState === 'victory'" class="end-screen">
+                <div class="win-icon">🎉</div>
                 <h1 class="win">恭喜！游戏胜利！</h1>
                 <p class="result">你成功扔出了5个垃圾！</p>
-                <button @click="startGame" class="restart-btn">再玩一次</button>
+                <p class="tip">真是个机灵的小家伙~</p>
+                <button @click="startGame" class="restart-btn">🔄 再玩一次</button>
             </div>
         </div>
     </div>
